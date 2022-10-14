@@ -15,9 +15,16 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ImageView gepHp1;
+    private ImageView gepHp2;
+    private ImageView gepHp3;
+    private ImageView emberHp1;
+    private ImageView emberHp2;
+    private ImageView emberHp3;
+
     private ImageView valasztottImg;
     private ImageView generaltImg;
-    private TextView resultTextView;
+    private TextView dontetlenTextView;
     private Button btnKo;
     private Button btnPapir;
     private Button btnOllo;
@@ -26,8 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private Valasztas generalt;
     private Random rnd;
 
-    private int emberGyozelem;
-    private int gepGyozelem;
+    private int dontetlenekSzama;
+    private int emberElet;
+    private int gepElet;
 
     private enum Valasztas {
         KO,
@@ -91,16 +99,39 @@ public class MainActivity extends AppCompatActivity {
         if (valasztott != generalt){
             if ((valasztott == Valasztas.KO && generalt == Valasztas.OLLO) || (valasztott == Valasztas.PAPIR && generalt == Valasztas.KO) || (valasztott == Valasztas.OLLO && generalt == Valasztas.PAPIR)){
                 Toast.makeText(this, "Te nyertél", Toast.LENGTH_SHORT).show();
-                emberGyozelem++;
+                gepElet--;
             }else {
                 Toast.makeText(this, "A számítógép nyert", Toast.LENGTH_SHORT).show();
-                gepGyozelem++;
+                emberElet--;
             }
         }else {
+            dontetlenekSzama++;
+            dontetlenTextView.setText(String.format("Döntetlenek száma: %d", dontetlenekSzama));
             Toast.makeText(this, "Döntetlen", Toast.LENGTH_SHORT).show();
         }
-        resultTextView.setText(String.format("Eredmény: Ember: %d - Computer: %d", emberGyozelem, gepGyozelem));
-        if (emberGyozelem == 3){
+        switch (gepElet){
+            case 2:
+                gepHp3.setImageResource(R.drawable.heart1);
+                break;
+            case 1:
+                gepHp2.setImageResource(R.drawable.heart1);
+                break;
+            case 0:
+                gepHp1.setImageResource(R.drawable.heart1);
+                break;
+        }
+        switch (emberElet){
+            case 2:
+                emberHp3.setImageResource(R.drawable.heart1);
+                break;
+            case 1:
+                emberHp2.setImageResource(R.drawable.heart1);
+                break;
+            case 0:
+                emberHp1.setImageResource(R.drawable.heart1);
+                break;
+        }
+        if (gepElet == 0){
             new AlertDialog.Builder(MainActivity.this).setTitle("Győzelem")
                     .setMessage("Szeretne új játékot játszani?")
                     .setPositiveButton("IGEN", new DialogInterface.OnClickListener() {
@@ -114,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                             finish();
                         }
                     }).setCancelable(false).show();
-        }else if (gepGyozelem == 3){
+        }else if (emberElet == 0){
             new AlertDialog.Builder(MainActivity.this).setTitle("Vereség")
                     .setMessage("Szeretne új játékot játszani?")
                     .setPositiveButton("IGEN", new DialogInterface.OnClickListener() {
@@ -132,21 +163,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void ujJatek() {
-        emberGyozelem = 0;
-        gepGyozelem = 0;
-        resultTextView.setText(String.format("Eredmény: Ember: %d - Computer: %d", emberGyozelem, gepGyozelem));
-
+        emberElet = 3;
+        gepElet = 3;
+        dontetlenekSzama = 0;
+        gepHp1.setImageResource(R.drawable.heart2);
+        gepHp2.setImageResource(R.drawable.heart2);
+        gepHp3.setImageResource(R.drawable.heart2);
+        emberHp1.setImageResource(R.drawable.heart2);
+        emberHp2.setImageResource(R.drawable.heart2);
+        emberHp3.setImageResource(R.drawable.heart2);
     }
 
     private void init(){
+        gepHp1 = findViewById(R.id.gepHp1);
+        gepHp2 = findViewById(R.id.gepHp2);
+        gepHp3 = findViewById(R.id.gepHp3);
+        emberHp1 = findViewById(R.id.emberHp1);
+        emberHp2 = findViewById(R.id.emberHp2);
+        emberHp3 = findViewById(R.id.emberHp3);
+
         valasztottImg = findViewById(R.id.valasztottImg);
         generaltImg = findViewById(R.id.generaltImg);
-        resultTextView = findViewById(R.id.resultTextView);
+        dontetlenTextView = findViewById(R.id.dontetlenTextView);
         btnKo = findViewById(R.id.btnKo);
         btnPapir = findViewById(R.id.btnPapir);
         btnOllo = findViewById(R.id.btnOllo);
 
-        emberGyozelem = 0;
-        gepGyozelem = 0;
+        ujJatek();
     }
 }
